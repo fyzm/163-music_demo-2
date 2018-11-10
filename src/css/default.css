@@ -49,7 +49,7 @@ input{font-size: inherit}
 .songList >li.active{
   background: #d4d4d4;
 }
-.upLoadArea{}
+
 .draggable{
   padding: 50px 20px;
   border: 1px dashed #ddd;
@@ -103,8 +103,5 @@ input{font-size: inherit}
 }
 .page >main{
   padding: 20px;
-}
-.pag > main >.form{
-
 }
 
