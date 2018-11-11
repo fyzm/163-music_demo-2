@@ -32,12 +32,13 @@
           },
           'BeforeUpload': function (up, file) {
             // 每个文件上传前,处理相关的事情
+            window.eventHub.emit('beforeUpload')
           },
           'UploadProgress': function (up, file) {
             // 每个文件上传时,处理相关的事情
-            uploadStatus.textContent = '上传中'
           },
-          'FileUploaded': function (up, file, info) {              
+          'FileUploaded': function (up, file, info) {
+            window.eventHub.emit('afterUpload')
               var domain = up.getOption('domain');
               var response = JSON.parse(info.response);
               var sourceLink = 'http://' + domain + '/' + encodeURIComponent(response.key);//获取上传成功的url
