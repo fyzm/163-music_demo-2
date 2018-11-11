@@ -74,17 +74,26 @@
       this.view.init()
       this.view.render(this.model.data)
       this.bindEvents()
-      window.eventHub.on('upload', (data) => {
-        this.model.data = data
-        this.view.render(this.model.data)
-      })
+      // window.eventHub.on('upload', (data) => {
+      //   this.model.data = data
+      //   this.view.render(this.model.data)
+      // })
       window.eventHub.on('select',(data)=>{
         this.model.data = data
         this.view.render(this.model.data)
       })
-      window.eventHub.on('new',()=>{
-        this.model.data = {
-          name:'', url:'', id:'', singer:'',
+      window.eventHub.on('new',(data)=>{
+        // if(data === undefined){
+        //   this.model.data = {
+          //   }
+          // }
+        //新建歌曲，解决了数据是在当前，还是在数据库里
+        if(this.model.data.id){
+          this.model.data = {
+            name:'', url:'', id:'', singer:'',
+          }
+        }else{
+          Object.assign(this.model.data,data)
         }
         this.view.render(this.model.data)
       })

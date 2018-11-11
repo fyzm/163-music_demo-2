@@ -18,17 +18,19 @@
       window.eventHub.on('new',(data)=>{
         this.active()
       })
-      window.eventHub.on('upload',(data)=>{
-        this.active()
-      })
+      // window.eventHub.on('upload',(data)=>{
+      //   this.active()
+      // })
       window.eventHub.on('select',(data)=>{
         this.deactive()
       })
-      $(this.view.el).on('click',this.active.bind(this))
+      $(this.view.el).on('click',()=>{
+        window.eventHub.emit('new')
+      })
     },
     active(){
+      // window.eventHub.emit('new')
       $(this.view.el).addClass('active')
-      window.eventHub.emit('new')
     },
     deactive(){
       $(this.view.el).removeClass('active')
