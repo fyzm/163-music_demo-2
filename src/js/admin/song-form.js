@@ -24,13 +24,19 @@
         </label>
         <input name = "url" type="text" value="__url__">
       </div>
+      <div class = "row">
+      <label>
+        封面
+      </label>
+      <input name = "cover" type="text" value="__cover__">
+    </div>
       <div class="row actions">
         <button type="submit">保存</button>
       </div>
     </form>
     `,
     render(data = {}) {
-      let placeholders = ['name', 'url', 'singer', 'id']
+      let placeholders = ['name', 'url', 'singer', 'id','cover']
       let html = this.template
       placeholders.map((string) => {
         html = html.replace(`__${string}__`, data[string] || '')
@@ -49,13 +55,14 @@
   }
   let model = {
     data: {
-      name: '', singer: '', url: '', id: ''
+      name: '', singer: '', url: '',cover:'', id: ''
     },
     update(data){
       var song = AV.Object.createWithoutData('Song', this.data.id);
       song.set('name',data.name);
       song.set('singer',data.singer);
       song.set('url',data.url);
+      song.set('cover',data.cover)
       return song.save().then((response)=>{
         Object.assign(this.data,data)
         return response
@@ -67,6 +74,7 @@
       song.set('name', data.name);
       song.set('singer', data.singer);
       song.set('url', data.url);
+      song.set('cover',data.cover)
       return song.save().then((newSong) => {
         let { id, attributes } = newSong
         this.data = { id, ...attributes }
@@ -99,7 +107,7 @@
         //新建歌曲，解决了数据是在当前，还是在数据库里
         if (this.model.data.id) {
           this.model.data = {
-            name: '', url: '', id: '', singer: '',
+            name: '', url: '', id: '', singer: '',cover:''
           }
         } else {
           Object.assign(this.model.data, data)
@@ -108,7 +116,7 @@
       })
     },
     create() {
-      let needs = 'name singer url'.split(' ')
+      let needs = 'name singer url cover'.split(' ')
       let data = {}
       needs.map((string) => {
         data[string] =
@@ -124,7 +132,7 @@
         })
     },
     update() {
-      let needs = 'name singer url'.split(' ')
+      let needs = 'name singer url cover'.split(' ')
       let data = {}
       needs.map((string) => {
         data[string] =
