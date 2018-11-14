@@ -25,10 +25,17 @@
         <input name = "url" type="text" value="__url__">
       </div>
       <div class = "row">
+        <label>
+          封面
+        </label>
+        <input name = "cover" type="text" value="__cover__">
+      </div>
+      <div class = "row">
       <label>
-        封面
-      </label>
-      <input name = "cover" type="text" value="__cover__">
+        歌词
+       </label>
+       <textarea cols = 100 rows = 10 name = "lyrics">__lyrics__</textarea>
+      </div>
     </div>
       <div class="row actions">
         <button type="submit">保存</button>
@@ -36,7 +43,7 @@
     </form>
     `,
     render(data = {}) {
-      let placeholders = ['name', 'url', 'singer', 'id','cover']
+      let placeholders = ['name', 'url', 'singer', 'id', 'cover','lyrics']
       let html = this.template
       placeholders.map((string) => {
         html = html.replace(`__${string}__`, data[string] || '')
@@ -55,16 +62,17 @@
   }
   let model = {
     data: {
-      name: '', singer: '', url: '',cover:'', id: ''
+      name: '', singer: '', url: '', cover: '', id: '',lyrics:''
     },
-    update(data){
+    update(data) {
       var song = AV.Object.createWithoutData('Song', this.data.id);
-      song.set('name',data.name);
-      song.set('singer',data.singer);
-      song.set('url',data.url);
-      song.set('cover',data.cover)
-      return song.save().then((response)=>{
-        Object.assign(this.data,data)
+      song.set('name', data.name);
+      song.set('singer', data.singer);
+      song.set('url', data.url);
+      song.set('cover', data.cover)
+      song.set('lyrics',data.lyrics)
+      return song.save().then((response) => {
+        Object.assign(this.data, data)
         return response
       });
     },
@@ -74,7 +82,8 @@
       song.set('name', data.name);
       song.set('singer', data.singer);
       song.set('url', data.url);
-      song.set('cover',data.cover)
+      song.set('cover', data.cover)
+      song.set('lyrics',data.lyrics)
       return song.save().then((newSong) => {
         let { id, attributes } = newSong
         this.data = { id, ...attributes }
@@ -107,7 +116,7 @@
         //新建歌曲，解决了数据是在当前，还是在数据库里
         if (this.model.data.id) {
           this.model.data = {
-            name: '', url: '', id: '', singer: '',cover:''
+            name: '', url: '', id: '', singer: '', cover: '',lyrics:''
           }
         } else {
           Object.assign(this.model.data, data)
@@ -116,7 +125,7 @@
       })
     },
     create() {
-      let needs = 'name singer url cover'.split(' ')
+      let needs = 'name singer url cover lyrics'.split(' ')
       let data = {}
       needs.map((string) => {
         data[string] =
@@ -132,16 +141,16 @@
         })
     },
     update() {
-      let needs = 'name singer url cover'.split(' ')
+      let needs = 'name singer url cover lyrics'.split(' ')
       let data = {}
       needs.map((string) => {
         data[string] =
           this.view.$el.find(`[name="${string}"]`).val()
       })
       this.model.update(data)
-      .then(()=>{
-        window.eventHub.emit('update',JSON.parse(JSON.stringify(this.model.data)))
-      })
+        .then(() => {
+          window.eventHub.emit('update', JSON.parse(JSON.stringify(this.model.data)))
+        })
     },
     bindEvents() {
       this.view.$el.on('submit', 'form', (e) => {

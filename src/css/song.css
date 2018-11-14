@@ -37,13 +37,13 @@
 
 .song-description{
 	flex-grow: 1;
-	color: #AEABAC;
+	color:red;
 	text-align: center;
 	line-height: 2;
 	margin-top: 20px;
 }
 .song-description h1{
-	color: white;
+	color: green;
 	font-size: 18px;
 }
 .song-description p{
