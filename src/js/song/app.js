@@ -10,7 +10,9 @@
       this.$el.find('img.cover').attr('src',song.cover)
       if(this.$el.find('audio').attr('src') !== song.url){
         let audio = this.$el.find('audio').attr('src',song.url).get(0)
+        
         audio.onended = ()=>{window.eventHub.emit('songEnd')}
+        audio.ontimeupdata = ()=>{ this.showLyric(audio.currentTime)}
       } 
       if(status === 'playing'){
         this.$el.find('.disc-container').addClass('playing')
@@ -22,19 +24,50 @@
       console.log({lyrics})
       lyrics.split('\n').map((string)=>{
         let p = document.createElement('p')
-        console.log(p)
         let regex = /\[([\d:.]+)\](.+)/
         let matches = string.match(regex)
-        
         if(matches){
           p.textContent = matches[2]
+          let time = matches[1]
+          let parts = time.split(':')
+          let minutes = parts[0]
+          let second = parts[1]
+          let newTime = parseInt(minutes,10) * 60 + parseFloat(second,10)
           p.setAttribute('data-time',newTime)
         }else{
           p.textContent = string
         }
         this.$el.find('.lyric>.lines').append(p)
       })
+
     },
+    showLyric(time){
+      let allP = this.$el.find('.lyric>.lines>p')
+      let p
+      for(let i = 0;i<allP.length;i++){
+        if(i===allP.length-1){
+          p = allP[i]
+          break
+        }else{
+          let currentTime = allP.eq(i).attr('data-time')
+          let nextTime = allP.eq(i+1).attr('data-time')
+          if(currentTime <=time && time < nextTime){
+            p = allP[i]
+            break
+          }
+        }
+      }
+      let pHeight = p.getBoundingClientRect().top
+      console.log(pHeight)
+      let linesHeight = this.$el.find('.lyric>lines')[0].getBoundingClientRect().top
+      console.log(linesHeight)
+      let height = pHeight - linesHeight
+      this.$el.find('.lyric>.lines').css({
+        transform:`translateY(${-(height - 25)}px)`
+      })
+      $(p).addClass('active').siblings('.active').removeClass('active')
+    },
+    
     play(){
       this.$el.find('audio')[0].play()
     },
